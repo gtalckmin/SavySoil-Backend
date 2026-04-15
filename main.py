@@ -25,8 +25,12 @@ from typing import Optional
 
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 
-# Your GitHub Pages frontend URL
+# Your GitHub Pages frontend URL - must match the origin making requests
+# Note: include protocol but not path (e.g., https://gtalckmin.github.io)
 GITHUB_PAGES_ORIGIN = os.getenv("GITHUB_PAGES_ORIGIN", "https://gtalckmin.github.io")
+
+# Ensure no trailing slashes or extra whitespace
+GITHUB_PAGES_ORIGIN = GITHUB_PAGES_ORIGIN.strip().rstrip("/")
 
 app = FastAPI(
     title="SavySoil Backend",
@@ -40,10 +44,10 @@ app = FastAPI(
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[GITHUB_PAGES_ORIGIN],
+    allow_origins=[GITHUB_PAGES_ORIGIN, "http://localhost:3000", "http://localhost:8000"],
     allow_credentials=True,
-    allow_methods=["POST", "GET", "OPTIONS"],
-    allow_headers=["Content-Type"],
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 # ============================================================
