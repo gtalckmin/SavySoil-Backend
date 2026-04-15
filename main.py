@@ -179,7 +179,7 @@ async def review_submission(submission: SavySoilSubmission):
         tokens_used = None
 
         for chunk in client.models.generate_content_stream(
-            model="gemini-2.0-flash",
+            model="gemma-4-26b-a4b-it",
             contents=user_prompt,
             config=generate_content_config,
         ):

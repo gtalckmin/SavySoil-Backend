@@ -28,7 +28,6 @@ share/python-wheels/
 # Environment variables
 .env
 .env.local
-.env.example
 
 # Environment variables
 .env
