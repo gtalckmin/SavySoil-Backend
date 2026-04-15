@@ -15,7 +15,8 @@ Environment Variables:
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
-import google.generativeai as genai
+from google import genai
+from google.genai import types
 import os
 from typing import Optional
 
@@ -44,8 +45,8 @@ app = FastAPI(
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[GITHUB_PAGES_ORIGIN, "http://localhost:3000", "http://localhost:8000"],
-    allow_credentials=True,
+    allow_origins=["*"],
+    allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
 )
@@ -159,39 +160,27 @@ async def review_submission(submission: SavySoilSubmission):
             detail="Gemini API key is not configured. Set GEMINI_API_KEY environment variable."
         )
 
-    # Configure Gemini client with the API key
-    genai.configure(api_key=GEMINI_API_KEY)
-
     # Build prompts
     system_prompt, user_prompt = build_agronomic_prompt(submission)
 
     try:
-        # Create client and call Gemini
+        # Create client and call Gemini using the new google-genai SDK
         client = genai.Client(api_key=GEMINI_API_KEY)
-        
-        # Create content for the model
-        contents = [
-            genai.types.Content(
-                role="user",
-                parts=[
-                    genai.types.Part.from_text(text=f"{system_prompt}\n\n{user_prompt}"),
-                ],
-            ),
-        ]
-        
+
         # Configure generation parameters
-        generate_content_config = genai.types.GenerateContentConfig(
+        generate_content_config = types.GenerateContentConfig(
             temperature=0.3,
             max_output_tokens=500,
+            system_instruction=system_prompt,
         )
-        
+
         # Stream and collect response
         review_text = ""
         tokens_used = None
-        
+
         for chunk in client.models.generate_content_stream(
             model="gemini-2.0-flash",
-            contents=contents,
+            contents=user_prompt,
             config=generate_content_config,
         ):
             if chunk.text:
