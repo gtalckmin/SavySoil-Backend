@@ -28,6 +28,10 @@ share/python-wheels/
 # Environment variables
 .env
 .env.local
+
+# Environment variables
+.env
+.env.local
 .env*.local
 
 # IDE
