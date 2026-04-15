@@ -97,7 +97,7 @@ def build_agronomic_prompt(submission: SavySoilSubmission) -> tuple[str, str]:
         "  • Application timing relative to crop growth stages\n"
         "  • Product selection (e.g., urea vs. ammonium sulfate for dual nutrient needs)\n"
         "  • Cost-effectiveness and sustainability\n"
-        "Keep responses concise (5–7 sentences) and educational. Highlight what they did well and "
+        "Keep responses concise (2–3 sentences) and educational. Highlight what they did well and "
         "where they can improve."
     )
 
@@ -169,8 +169,8 @@ async def review_submission(submission: SavySoilSubmission):
 
         # Configure generation parameters
         generate_content_config = types.GenerateContentConfig(
-            temperature=0.3,
-            max_output_tokens=500,
+            temperature=0.1,
+            max_output_tokens=5000,
             system_instruction=system_prompt,
         )
 
